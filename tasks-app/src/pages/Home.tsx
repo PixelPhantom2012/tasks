@@ -28,6 +28,16 @@ export default function Home() {
         <details className="mb-4 bg-yellow-50 border border-yellow-300 rounded-xl p-3 text-xs font-mono">
           <summary className="cursor-pointer font-bold text-yellow-800">🐛 Debug: tasks in storage ({tasks.length})</summary>
           <div className="mt-2 flex flex-col gap-2">
+            <button
+              onClick={() => {
+                if (confirm("למחוק את כל המטלות?")) {
+                  tasks.forEach((t) => deleteTask(t.id));
+                }
+              }}
+              className="self-start bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1 rounded text-xs"
+            >
+              🗑 מחק הכל
+            </button>
             {tasks.map((t) => (
               <div key={t.id} className="bg-white border border-yellow-200 rounded p-2">
                 <div><b>title:</b> {t.title}</div>

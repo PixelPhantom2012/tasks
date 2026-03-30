@@ -52,6 +52,7 @@ export function useTasks() {
         date: input.recurrence ? undefined : (input.date ?? localToday),
         recurrence: input.recurrence,
         completedDates: [],
+        completedTimestamps: {},
         deletedDates: [],
         createdAt: input.date ?? localToday,
       };
@@ -82,11 +83,18 @@ export function useTasks() {
       const updated = tasks.map((t) => {
         if (t.id !== id) return t;
         const isCompleted = t.completedDates.includes(date);
+        const nextTs = { ...(t.completedTimestamps ?? {}) };
+        if (isCompleted) {
+          delete nextTs[date];
+        } else {
+          nextTs[date] = new Date().toISOString();
+        }
         return {
           ...t,
           completedDates: isCompleted
             ? t.completedDates.filter((d) => d !== date)
             : [...t.completedDates, date],
+          completedTimestamps: nextTs,
         };
       });
       persist(updated);

@@ -14,6 +14,8 @@ export interface Task {
   date?: string;           // "yyyy-MM-dd" — for one-off tasks
   recurrence?: Recurrence;
   completedDates: string[]; // ["yyyy-MM-dd", ...]
+  /** When each date was marked done (ISO). Used to tell on-time vs late retro for streak. */
+  completedTimestamps?: Record<string, string>;
   deletedDates: string[];   // occurrences skipped for recurring tasks
   createdAt: string;        // "yyyy-MM-dd" local date
 }

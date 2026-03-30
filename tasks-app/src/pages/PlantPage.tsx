@@ -1,16 +1,12 @@
 import { Link } from "react-router-dom";
 import Plant from "../components/Plant";
 import { useTasks } from "../hooks/useTasks";
-import { useStreak, getMissedDays } from "../hooks/useStreak";
+import { useStreak, getMissedDays, XP_PER_TASK, XP_PERFECT_DAY } from "../hooks/useStreak";
 
 export default function PlantPage() {
   const { tasks } = useTasks();
-  const { streak, plantLevel } = useStreak(tasks);
+  const { streak, stage, growthPct } = useStreak(tasks);
   const missedDays = getMissedDays(tasks);
-
-  // Apply shrink penalty: after 1 grace day, plant shrinks 1 level per missed day
-  const shrinkAmount = missedDays > 1 ? missedDays - 1 : 0;
-  const displayLevel = Math.max(0, plantLevel - shrinkAmount);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-slate-50">
@@ -32,7 +28,7 @@ export default function PlantPage() {
 
       <main className="max-w-lg mx-auto px-4 py-10">
         <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
-          <Plant level={displayLevel} streak={streak} missedDays={missedDays} />
+          <Plant stage={stage} growthPct={growthPct} streak={streak} missedDays={missedDays} />
         </div>
 
         {/* Tips */}
@@ -41,11 +37,15 @@ export default function PlantPage() {
           <ul className="flex flex-col gap-2">
             <li className="flex items-start gap-2 text-sm text-slate-600">
               <span className="text-green-500 mt-0.5">✓</span>
-              סמן לפחות מטלה אחת ביום כדי לשמור על הרצף
+              כל מטלה שמסמן — הצמח מקבל +{XP_PER_TASK}%
+            </li>
+            <li className="flex items-start gap-2 text-sm text-slate-600">
+              <span className="text-yellow-500 mt-0.5">⭐</span>
+              יום מושלם (כל המטלות) — בונוס +{XP_PERFECT_DAY}% נוסף
             </li>
             <li className="flex items-start gap-2 text-sm text-slate-600">
               <span className="text-green-500 mt-0.5">✓</span>
-              כל 2 ימים ברצף — הצמח עולה שלב
+              כשמגיעים ל-100% — הצמח עולה שלב (זרע ← נבט ← ניצן ← פריחה)
             </li>
             <li className="flex items-start gap-2 text-sm text-slate-600">
               <span className="text-amber-500 mt-0.5">!</span>
@@ -53,7 +53,7 @@ export default function PlantPage() {
             </li>
             <li className="flex items-start gap-2 text-sm text-slate-600">
               <span className="text-red-400 mt-0.5">✗</span>
-              יותר מיום ללא מטלות — הצמח קומל שלב אחד לכל יום
+              יותר מיום ללא מטלות — הרצף נשבר
             </li>
           </ul>
         </div>
