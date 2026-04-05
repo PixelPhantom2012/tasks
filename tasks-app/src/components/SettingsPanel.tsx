@@ -130,6 +130,8 @@ function PlantTab({
 }
 
 // ── Background tab ─────────────────────────────────────────────────────────────
+const base = import.meta.env.BASE_URL; // "/tasks/" in production, "/" in dev
+
 const BG_OPTIONS: { id: Background; label: (l: Language) => string; preview: string }[] = [
   {
     id: "default",
@@ -139,7 +141,17 @@ const BG_OPTIONS: { id: Background; label: (l: Language) => string; preview: str
   {
     id: "jungle",
     label: (l) => t(l, "bgJungle"),
-    preview: "url('/bg-jungle.png') center/cover",
+    preview: `url('${base}bg-jungle.png') center/cover`,
+  },
+  {
+    id: "night",
+    label: (l) => t(l, "bgNight"),
+    preview: `url('${base}bg-night.jpg') center/cover`,
+  },
+  {
+    id: "ocean",
+    label: (l) => t(l, "bgOcean"),
+    preview: `url('${base}bg-ocean.jpg') center/cover`,
   },
 ];
 

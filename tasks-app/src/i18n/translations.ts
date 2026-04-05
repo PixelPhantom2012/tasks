@@ -17,6 +17,8 @@ type Translations = {
   hideStreakBadge: string;
   bgDefault: string;
   bgJungle: string;
+  bgNight: string;
+  bgOcean: string;
   langHe: string;
   langEn: string;
 
@@ -74,6 +76,8 @@ const he: Translations = {
   hideStreakBadge: "הסתר תג רצף",
   bgDefault: "ברירת מחדל",
   bgJungle: "ג'ונגל",
+  bgNight: "לילה",
+  bgOcean: "אוקיינוס",
   langHe: "עברית",
   langEn: "English",
 
@@ -127,6 +131,8 @@ const en: Translations = {
   hideStreakBadge: "Hide streak badge",
   bgDefault: "Default",
   bgJungle: "Jungle",
+  bgNight: "Night",
+  bgOcean: "Ocean",
   langHe: "עברית",
   langEn: "English",
 

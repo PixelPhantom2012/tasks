@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 export type Language = "he" | "en";
-export type Background = "default" | "jungle";
+export type Background = "default" | "jungle" | "night" | "ocean";
 
 interface SettingsContextValue {
   language: Language;
