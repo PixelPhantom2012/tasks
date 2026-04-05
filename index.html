@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zimmer TV</title>
+    <meta
+      name="description"
+      content="Zimmer TV — a simple landing page with quick actions."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" aria-labelledby="title">
+        <header class="header">
+          <div class="brand" aria-label="Zimmer TV">
+            <span class="brand__dot" aria-hidden="true"></span>
+            <span class="brand__name">Zimmer TV</span>
+          </div>
+          <h1 id="title" class="title">Welcome to your Zimmer</h1>
+          <p class="subtitle">
+            Everything you need for your stay, one tap away.
+          </p>
+        </header>
+
+        <nav class="actions" aria-label="Quick actions">
+          <a
+            class="btn btn--primary"
+            href="./tv.html"
+            role="button"
+            data-action="watch-tv"
+          >
+            Watch TV
+          </a>
+          <a class="btn" href="#" role="button" data-action="room-service">
+            Room Service
+          </a>
+          <a
+            class="btn btn--danger"
+            href="./checkout.html"
+            role="button"
+            data-action="check-out"
+          >
+            Check Out
+          </a>
+        </nav>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
+

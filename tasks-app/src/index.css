@@ -15,6 +15,11 @@ body {
   padding: 0;
 }
 
+/* When LTR language is active the SettingsContext sets dir on <html> */
+html[dir="ltr"] body {
+  direction: ltr;
+}
+
 * {
   box-sizing: border-box;
 }

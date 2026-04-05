@@ -29,11 +29,11 @@ export function isCurrentWeek(weekStart: Date): boolean {
   return isSameWeek(weekStart, new Date(), { weekStartsOn: WEEK_START });
 }
 
-export function formatWeekRange(weekStart: Date): string {
+export function formatWeekRange(weekStart: Date, dayNames = DAY_NAMES_HE): { start: string; end: string } {
   const weekEnd = getWeekEnd(weekStart);
-  const startStr = format(weekStart, "d/M");
-  const endStr = format(weekEnd, "d/M/yyyy");
-  return `${startStr} – ${endStr}`;
+  const startStr = `${dayNames[weekStart.getDay()]} ${format(weekStart, "d/M")}`;
+  const endStr = `${dayNames[weekEnd.getDay()]} ${format(weekEnd, "d/M/yyyy")}`;
+  return { start: startStr, end: endStr };
 }
 
 export function toDateKey(date: Date): string {
@@ -41,3 +41,4 @@ export function toDateKey(date: Date): string {
 }
 
 export const DAY_NAMES_HE = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+export const DAY_NAMES_EN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

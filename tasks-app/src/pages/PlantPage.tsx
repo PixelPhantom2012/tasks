@@ -2,16 +2,19 @@ import { Link } from "react-router-dom";
 import Plant from "../components/Plant";
 import { useTasks } from "../hooks/useTasks";
 import { useStreak, getMissedDays, XP_PER_TASK, XP_PERFECT_DAY } from "../hooks/useStreak";
+import { useSettings } from "../context/SettingsContext";
+import { t } from "../i18n/translations";
 
 export default function PlantPage() {
   const { tasks } = useTasks();
   const { streak, stage, growthPct } = useStreak(tasks);
   const missedDays = getMissedDays(tasks);
+  const { language } = useSettings();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-slate-50">
+    <div className="min-h-screen">
       {/* Top nav */}
-      <header className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
+      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-slate-200 shadow-sm">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
           <Link
             to="/"
@@ -20,40 +23,40 @@ export default function PlantPage() {
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
-            חזרה למטלות
+            {t(language, "backToTasks")}
           </Link>
-          <h1 className="text-xl font-bold text-slate-800">הצמח שלי</h1>
+          <h1 className="text-xl font-bold text-slate-800">{t(language, "myPlant")}</h1>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-10">
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
+        <div className="bg-white/90 backdrop-blur rounded-3xl shadow-sm border border-slate-200 p-8">
           <Plant stage={stage} growthPct={growthPct} streak={streak} missedDays={missedDays} />
         </div>
 
         {/* Tips */}
-        <div className="mt-6 bg-white rounded-2xl border border-slate-200 p-5">
-          <h2 className="font-bold text-slate-700 mb-3 text-sm">איך גדל הצמח?</h2>
+        <div className="mt-6 bg-white/90 backdrop-blur rounded-2xl border border-slate-200 p-5">
+          <h2 className="font-bold text-slate-700 mb-3 text-sm">{t(language, "howPlantGrows")}</h2>
           <ul className="flex flex-col gap-2">
             <li className="flex items-start gap-2 text-sm text-slate-600">
               <span className="text-green-500 mt-0.5">✓</span>
-              כל מטלה שמסמן — הצמח מקבל +{XP_PER_TASK}%
+              {t(language, "perTask")} +{XP_PER_TASK}%
             </li>
             <li className="flex items-start gap-2 text-sm text-slate-600">
               <span className="text-yellow-500 mt-0.5">⭐</span>
-              יום מושלם (כל המטלות) — בונוס +{XP_PERFECT_DAY}% נוסף
+              {t(language, "perfectDay")} +{XP_PERFECT_DAY}%
             </li>
             <li className="flex items-start gap-2 text-sm text-slate-600">
               <span className="text-green-500 mt-0.5">✓</span>
-              כשמגיעים ל-100% — הצמח עולה שלב (זרע ← נבט ← ניצן ← פריחה)
+              {t(language, "stageProg")}
             </li>
             <li className="flex items-start gap-2 text-sm text-slate-600">
               <span className="text-amber-500 mt-0.5">!</span>
-              יום אחד ללא מטלות — הצמח לא זז (חסד)
+              {t(language, "noTasksOneDay")}
             </li>
             <li className="flex items-start gap-2 text-sm text-slate-600">
               <span className="text-red-400 mt-0.5">✗</span>
-              יותר מיום ללא מטלות — הרצף נשבר
+              {t(language, "noTasksMany")}
             </li>
           </ul>
         </div>

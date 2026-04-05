@@ -9,11 +9,14 @@ import {
   formatWeekRange,
   toDateKey,
   DAY_NAMES_HE,
+  DAY_NAMES_EN,
 } from "../utils/dates";
 import { getTasksForDate } from "../utils/recurrence";
 import TaskCard from "./TaskCard";
 import TaskModal from "./TaskModal";
 import type { CreateTaskInput } from "../hooks/useTasks";
+import { useSettings } from "../context/SettingsContext";
+import { t } from "../i18n/translations";
 
 interface Props {
   tasks: Task[];
@@ -28,10 +31,12 @@ export default function WeekView({ tasks, onAdd, onUpdate, onDelete, onDeleteOcc
   const [weekStart, setWeekStart] = useState(() => getWeekStart(new Date()));
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [addModalDate, setAddModalDate] = useState<string | undefined>();
+  const { language } = useSettings();
 
   const weekDays = getWeekDays(weekStart);
   const onCurrentWeek = isCurrentWeek(weekStart);
   const todayKey = toDateKey(new Date());
+  const DAY_NAMES = language === "he" ? DAY_NAMES_HE : DAY_NAMES_EN;
 
   function openAddModal(dateKey?: string) {
     setAddModalDate(dateKey);
@@ -41,38 +46,46 @@ export default function WeekView({ tasks, onAdd, onUpdate, onDelete, onDeleteOcc
   return (
     <div className="flex flex-col gap-4">
       {/* Week header */}
-      <div className="flex items-center justify-between bg-white rounded-2xl shadow-sm border border-slate-200 px-4 py-3">
-        {/* Left arrow = go forward (since RTL, visually on the left = future) */}
+      <div className="flex items-center justify-between bg-white/90 backdrop-blur rounded-2xl shadow-sm border border-slate-200 px-4 py-3">
+        {/* In RTL: visually right = go back (chevron-right). In LTR: visually left = go back (chevron-left) */}
         <button
-          onClick={() => setWeekStart((w) => shiftWeek(w, 1))}
-          className="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-600"
-          title="שבוע קדימה"
+          onClick={() => setWeekStart((w) => shiftWeek(w, -1))}
+          className="p-3 rounded-xl hover:bg-slate-100 transition-colors text-slate-600"
+          title={t(language, "weekBack")}
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            {language === "he"
+              ? <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              : <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />}
           </svg>
         </button>
 
         <div className="flex flex-col items-center gap-1">
-          <span className="font-bold text-slate-800 text-base">{formatWeekRange(weekStart)}</span>
+          <div className="flex items-center gap-1.5 font-bold text-slate-800 text-base">
+            <span>{formatWeekRange(weekStart, DAY_NAMES).start}</span>
+            <span className="text-slate-400 font-normal">–</span>
+            <span>{formatWeekRange(weekStart, DAY_NAMES).end}</span>
+          </div>
           {!onCurrentWeek && (
             <button
               onClick={() => setWeekStart(getWeekStart(new Date()))}
               className="text-xs text-indigo-500 hover:text-indigo-700 font-medium underline underline-offset-2 transition-colors"
             >
-              חזרה לשבוע הנוכחי
+              {t(language, "backToCurrentWeek")}
             </button>
           )}
         </div>
 
-        {/* Right arrow = go back (since RTL, visually on the right = past) */}
+        {/* In RTL: visually left = go forward (chevron-left). In LTR: visually right = go forward (chevron-right) */}
         <button
-          onClick={() => setWeekStart((w) => shiftWeek(w, -1))}
-          className="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-600"
-          title="שבוע אחורה"
+          onClick={() => setWeekStart((w) => shiftWeek(w, 1))}
+          className="p-3 rounded-xl hover:bg-slate-100 transition-colors text-slate-600"
+          title={t(language, "weekForward")}
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            {language === "he"
+              ? <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              : <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />}
           </svg>
         </button>
       </div>
@@ -89,29 +102,29 @@ export default function WeekView({ tasks, onAdd, onUpdate, onDelete, onDeleteOcc
               key={dayKey}
               className={`rounded-2xl border ${
                 isToday
-                  ? "border-indigo-400 bg-indigo-50/50"
-                  : "border-slate-200 bg-white"
+                  ? "border-indigo-400 bg-indigo-50/80 backdrop-blur"
+                  : "border-slate-200 bg-white/90 backdrop-blur"
               }`}
             >
               {/* Day header */}
               <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                   <span className={`font-bold text-sm ${isToday ? "text-indigo-600" : "text-slate-700"}`}>
-                    {DAY_NAMES_HE[day.getDay()]}
+                    {DAY_NAMES[day.getDay()]}
                   </span>
                   <span className={`text-sm ${isToday ? "text-indigo-500" : "text-slate-400"}`}>
                     {format(day, "d/M")}
                   </span>
                   {isToday && (
                     <span className="text-xs bg-indigo-500 text-white rounded-full px-2 py-0.5 font-medium">
-                      היום
+                      {t(language, "today")}
                     </span>
                   )}
                 </div>
                 <button
                   onClick={() => openAddModal(dayKey)}
                   className="text-slate-400 hover:text-indigo-500 transition-colors p-1 rounded-lg hover:bg-indigo-50"
-                  title="הוסף מטלה"
+                  title={t(language, "addTask")}
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -122,7 +135,7 @@ export default function WeekView({ tasks, onAdd, onUpdate, onDelete, onDeleteOcc
               {/* Tasks */}
               <div className="p-3 flex flex-col gap-2">
                 {dayTasks.length === 0 ? (
-                  <p className="text-xs text-slate-300 text-center py-2">אין מטלות</p>
+                  <p className="text-xs text-slate-300 text-center py-2">{t(language, "noTasks")}</p>
                 ) : (
                   dayTasks.map((task) => (
                     <TaskCard
@@ -150,7 +163,7 @@ export default function WeekView({ tasks, onAdd, onUpdate, onDelete, onDeleteOcc
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
         </svg>
-        הוסף מטלה
+        {t(language, "addTask")}
       </button>
 
       {/* Add modal */}
