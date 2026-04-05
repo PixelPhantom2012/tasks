@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter as BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import PlantPage from "./pages/PlantPage";
 import { SettingsProvider } from "./context/SettingsContext";
