@@ -26,6 +26,10 @@ Write your ideas here. When ready to implement, move them to the "Ready" section
 
 > Implemented ideas (with date).
 
+- **06/04/2026 07:50** — Bug fix: Adding a task created it twice.
+  Cause: optimistic update + real-time INSERT event both added the task to state.
+  Fix: removed the optimistic update from `addTask` — now relies solely on the real-time subscription.
+
 - **06/04/2026 07:42** — Integrated Supabase: user authentication (signup/login/logout) + cloud task sync with real-time updates across devices.
   Tasks moved from `localStorage` to a Supabase `tasks` table with Row Level Security.
   New files: `src/lib/supabase.ts`, `src/context/AuthContext.tsx`, `src/pages/LoginPage.tsx`.
