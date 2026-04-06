@@ -110,13 +110,9 @@ export function useTasks() {
         deletedDates: [],
         createdAt: input.date ?? localToday,
       };
-      // Optimistic update
-      setTasks((prev) => [...prev, task]);
+      // No optimistic update — the real-time INSERT event will add it to state
       const { error } = await supabase.from("tasks").insert(taskToRow(task, user.id));
-      if (error) {
-        console.error("addTask error:", error.message);
-        setTasks((prev) => prev.filter((t) => t.id !== task.id));
-      }
+      if (error) console.error("addTask error:", error.message);
     },
     [user]
   );
