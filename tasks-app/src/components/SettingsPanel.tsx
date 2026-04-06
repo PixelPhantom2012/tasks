@@ -153,6 +153,21 @@ const BG_OPTIONS: { id: Background; label: (l: Language) => string; preview: str
     label: (l) => t(l, "bgOcean"),
     preview: `url('${base}bg-ocean.jpg') center/cover`,
   },
+  {
+    id: "mountain",
+    label: (l) => t(l, "bgMountain"),
+    preview: `url('${base}bg-mountain.jpg') center/cover`,
+  },
+  {
+    id: "city",
+    label: (l) => t(l, "bgCity"),
+    preview: `url('${base}bg-city.jpg') center/cover`,
+  },
+  {
+    id: "gradient",
+    label: (l) => t(l, "bgGradient"),
+    preview: "linear-gradient(135deg, #667eea 0%, #764ba2 40%, #f093fb 100%)",
+  },
 ];
 
 function BackgroundTab({

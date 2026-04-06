@@ -19,6 +19,9 @@ type Translations = {
   bgJungle: string;
   bgNight: string;
   bgOcean: string;
+  bgMountain: string;
+  bgCity: string;
+  bgGradient: string;
   langHe: string;
   langEn: string;
 
@@ -78,6 +81,9 @@ const he: Translations = {
   bgJungle: "ג'ונגל",
   bgNight: "לילה",
   bgOcean: "אוקיינוס",
+  bgMountain: "הרים",
+  bgCity: "עיר",
+  bgGradient: "גרדיאנט",
   langHe: "עברית",
   langEn: "English",
 
@@ -133,6 +139,9 @@ const en: Translations = {
   bgJungle: "Jungle",
   bgNight: "Night",
   bgOcean: "Ocean",
+  bgMountain: "Mountain",
+  bgCity: "City",
+  bgGradient: "Gradient",
   langHe: "עברית",
   langEn: "English",
 

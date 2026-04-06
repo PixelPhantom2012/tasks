@@ -39,6 +39,30 @@ const BG_CONFIG: Record<Background, BgConfig> = {
     },
     overlay: "rgba(0,30,60,0.30)",
   },
+  mountain: {
+    style: {
+      backgroundImage: `url('${base}bg-mountain.jpg')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+    },
+    overlay: "rgba(10,20,40,0.35)",
+  },
+  city: {
+    style: {
+      backgroundImage: `url('${base}bg-city.jpg')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+    },
+    overlay: "rgba(0,0,20,0.40)",
+  },
+  gradient: {
+    style: {
+      background: "linear-gradient(135deg, #667eea 0%, #764ba2 40%, #f093fb 100%)",
+      backgroundAttachment: "fixed",
+    },
+  },
 };
 
 export default function AppBackground({ children }: { children: ReactNode }) {
