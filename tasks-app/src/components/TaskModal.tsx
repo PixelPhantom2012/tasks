@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { Task, Recurrence, RecurrenceType } from "../types";
 import type { CreateTaskInput } from "../hooks/useTasks";
 import { toDateKey } from "../utils/dates";
@@ -108,7 +109,7 @@ export default function TaskModal({
     }
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
       <div
         className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 flex flex-col gap-4"
@@ -296,6 +297,7 @@ export default function TaskModal({
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
