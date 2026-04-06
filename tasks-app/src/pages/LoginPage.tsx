@@ -7,6 +7,11 @@ type Mode = "login" | "signup";
 function friendlyError(raw: string, mode: Mode, isHe: boolean): string {
   const msg = raw.toLowerCase();
 
+  if (msg.includes("429") || msg.includes("too many") || msg.includes("rate limit") || msg.includes("over_email_send_rate_limit") || msg.includes("security purposes"))
+    return isHe
+      ? "יותר מדי ניסיונות — אנא המתן מספר דקות ונסה שוב."
+      : "Too many attempts — please wait a few minutes and try again.";
+
   if (mode === "signup") {
     if (msg.includes("already registered") || msg.includes("user already exists") || msg.includes("email address is already"))
       return isHe ? "כבר קיים משתמש עם האימייל הזה." : "An account with this email already exists.";

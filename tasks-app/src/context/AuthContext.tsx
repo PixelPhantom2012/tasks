@@ -31,19 +31,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) return { error: error.message };
-    // If Supabase returns a session right away, email confirm is disabled — user is in.
-    // If identities is empty, the email is already registered (Supabase silently "succeeds").
-    if (data.user && data.user.identities?.length === 0) {
-      return { error: "User already registered" };
+    try {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) return { error: error.message };
+      if (data.user && data.user.identities?.length === 0) {
+        return { error: "User already registered" };
+      }
+      return { error: null };
+    } catch {
+      return { error: "Too many requests" };
     }
-    return { error: null };
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      return { error: error?.message ?? null };
+    } catch {
+      return { error: "Too many requests" };
+    }
   };
 
   const signOut = async () => {
