@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSettings, type Background, type Language } from "../context/SettingsContext";
+import { useAuth } from "../context/AuthContext";
 import { t } from "../i18n/translations";
 
 type Tab = "plant" | "background" | "language";
@@ -8,6 +9,7 @@ export default function SettingsPanel() {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("plant");
   const { language, setLanguage, background, setBackground, streakVisible, setStreakVisible } = useSettings();
+  const { user, signOut } = useAuth();
 
   const isRtl = language === "he";
 
@@ -95,6 +97,22 @@ export default function SettingsPanel() {
               onSelect={setLanguage}
             />
           )}
+        </div>
+
+        {/* Footer: user info + logout */}
+        <div className="border-t border-slate-100 px-5 py-4 flex flex-col gap-2">
+          {user && (
+            <p className="text-xs text-slate-400 truncate">{user.email}</p>
+          )}
+          <button
+            onClick={signOut}
+            className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-xl py-2.5 text-sm transition-colors border border-red-200"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+            </svg>
+            {language === "he" ? "התנתק" : "Sign out"}
+          </button>
         </div>
       </div>
     </>
