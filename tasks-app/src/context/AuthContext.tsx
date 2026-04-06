@@ -31,8 +31,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({ email, password });
-    return { error: error?.message ?? null };
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) return { error: error.message };
+    // If Supabase returns a session right away, email confirm is disabled — user is in.
+    // If identities is empty, the email is already registered (Supabase silently "succeeds").
+    if (data.user && data.user.identities?.length === 0) {
+      return { error: "User already registered" };
+    }
+    return { error: null };
   };
 
   const signIn = async (email: string, password: string) => {

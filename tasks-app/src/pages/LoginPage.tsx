@@ -4,6 +4,34 @@ import { useSettings } from "../context/SettingsContext";
 
 type Mode = "login" | "signup";
 
+function friendlyError(raw: string, mode: Mode, isHe: boolean): string {
+  const msg = raw.toLowerCase();
+
+  if (mode === "signup") {
+    if (msg.includes("already registered") || msg.includes("user already exists") || msg.includes("email address is already"))
+      return isHe ? "כבר קיים משתמש עם האימייל הזה." : "An account with this email already exists.";
+    if (msg.includes("password") && (msg.includes("short") || msg.includes("weak") || msg.includes("characters")))
+      return isHe ? "הסיסמה חייבת להכיל לפחות 6 תווים." : "Password must be at least 6 characters.";
+    if (msg.includes("invalid email") || msg.includes("valid email"))
+      return isHe ? "כתובת האימייל לא תקינה." : "Invalid email address.";
+  }
+
+  if (mode === "login") {
+    if (
+      msg.includes("invalid login") ||
+      msg.includes("invalid credentials") ||
+      msg.includes("wrong password") ||
+      msg.includes("email not confirmed") ||
+      msg.includes("no user") ||
+      msg.includes("user not found")
+    )
+      return isHe ? "האימייל או הסיסמה לא נכונים." : "Incorrect email or password.";
+  }
+
+  // Generic fallback
+  return isHe ? "משהו השתבש, נסה שוב." : "Something went wrong, please try again.";
+}
+
 export default function LoginPage() {
   const { signIn, signUp } = useAuth();
   const { language } = useSettings();
@@ -12,32 +40,27 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const isHe = language === "he";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setSuccessMsg(null);
     setLoading(true);
 
     if (mode === "login") {
       const { error } = await signIn(email, password);
-      if (error) setError(error);
+      if (error) setError(friendlyError(error, "login", isHe));
     } else {
       const { error } = await signUp(email, password);
-      if (error) {
-        setError(error);
-      } else {
-        setSuccessMsg(
-          isHe
-            ? "נשלח אימייל אימות — אנא בדוק את תיבת הדואר שלך ואשר את החשבון."
-            : "Verification email sent — please check your inbox and confirm your account."
-        );
-      }
+      if (error) setError(friendlyError(error, "signup", isHe));
     }
     setLoading(false);
+  }
+
+  function switchMode() {
+    setMode(mode === "login" ? "signup" : "login");
+    setError(null);
   }
 
   return (
@@ -69,7 +92,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder={isHe ? "you@example.com" : "you@example.com"}
+              placeholder="you@example.com"
             />
           </div>
 
@@ -80,6 +103,7 @@ export default function LoginPage() {
             <input
               type="password"
               required
+              minLength={6}
               autoComplete={mode === "login" ? "current-password" : "new-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -90,22 +114,16 @@ export default function LoginPage() {
 
           {/* Error */}
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-2.5">
-              {error}
-            </p>
-          )}
-
-          {/* Success */}
-          {successMsg && (
-            <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl px-4 py-2.5">
-              {successMsg}
-            </p>
+            <div className="flex items-start gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+              <span className="mt-0.5 flex-shrink-0">⚠️</span>
+              <span>{error}</span>
+            </div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-300 text-white font-semibold rounded-xl py-2.5 transition-colors"
+            className="bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 disabled:bg-slate-300 text-white font-semibold rounded-xl py-3 transition-colors"
           >
             {loading
               ? (isHe ? "טוען..." : "Loading...")
@@ -121,7 +139,7 @@ export default function LoginPage() {
             ? isHe ? "אין לך חשבון?" : "Don't have an account?"
             : isHe ? "כבר יש לך חשבון?" : "Already have an account?"}{" "}
           <button
-            onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(null); setSuccessMsg(null); }}
+            onClick={switchMode}
             className="text-indigo-500 hover:text-indigo-700 font-medium underline underline-offset-2"
           >
             {mode === "login"

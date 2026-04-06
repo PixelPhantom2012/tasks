@@ -8,6 +8,8 @@ Write your ideas here. When ready to implement, move them to the "Ready" section
 
 > Add your ideas here freely — no need to be detailed yet.
 
+- **SMS OTP login** — Instead of email + password, user enters phone number, gets an SMS code, enters it, and is logged in. The phone can auto-detect the SMS and fill in the code automatically (supported on Android and iOS via WebOTP API / SMS autofill). Requires enabling "Phone" provider in Supabase Auth settings + a Twilio account for SMS sending.
+
 ---
 
 ## ✅ Ready to Implement
@@ -25,6 +27,8 @@ Write your ideas here. When ready to implement, move them to the "Ready" section
 ## ✔️ Done
 
 > Implemented ideas (with date).
+
+- **06/04/2026 09:43** — Improved auth error messages: "email already registered" on duplicate signup, "incorrect email or password" on bad login. Removed email verification flow (confusing UX). Fixed Supabase identity check to detect already-registered emails.
 
 - **06/04/2026 07:50** — Bug fix: Adding a task created it twice.
   Cause: optimistic update + real-time INSERT event both added the task to state.
