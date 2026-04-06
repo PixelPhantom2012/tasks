@@ -24,7 +24,12 @@ export default function SettingsPanel() {
       {/* Gear button — top-left in RTL (Hebrew), top-right in LTR (English) */}
       <button
         onClick={() => setOpen(true)}
-        style={{ position: "fixed", top: "12px", [isRtl ? "right" : "left"]: "12px", zIndex: 50 }}
+        style={{
+          position: "fixed",
+          top: "calc(12px + env(safe-area-inset-top, 0px))",
+          [isRtl ? "right" : "left"]: "12px",
+          zIndex: 50,
+        }}
         className="w-10 h-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur border border-slate-200 shadow-md hover:bg-white hover:shadow-lg transition-all text-slate-600 hover:text-slate-800"
         title={t(language, "settings")}
         aria-label={t(language, "settings")}
@@ -42,9 +47,10 @@ export default function SettingsPanel() {
 
       {/* Panel — slides in from the same side as the gear button */}
       <div
-        className={`fixed top-0 bottom-0 w-80 max-w-[90vw] bg-white shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 bottom-0 w-[85vw] max-w-sm bg-white shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-in-out ${
           isRtl ? "right-0" : "left-0"
         } ${open ? "translate-x-0" : isRtl ? "translate-x-full" : "-translate-x-full"}`}
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         {/* Panel header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">

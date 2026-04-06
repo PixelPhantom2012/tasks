@@ -13,6 +13,10 @@ body {
   color: #1e293b;
   margin: 0;
   padding: 0;
+  /* Prevent iOS text size adjustment */
+  -webkit-text-size-adjust: 100%;
+  /* Smooth scrolling */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* When LTR language is active the SettingsContext sets dir on <html> */
@@ -22,4 +26,15 @@ html[dir="ltr"] body {
 
 * {
   box-sizing: border-box;
+  /* Remove tap highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe area padding for iPhone notch / home bar */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
 }

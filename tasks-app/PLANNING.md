@@ -26,6 +26,10 @@ Write your ideas here. When ready to implement, move them to the "Ready" section
 
 > Implemented ideas (with date).
 
+- **06/04/2026 07:42** — Integrated Supabase: user authentication (signup/login/logout) + cloud task sync with real-time updates across devices.
+  Tasks moved from `localStorage` to a Supabase `tasks` table with Row Level Security.
+  New files: `src/lib/supabase.ts`, `src/context/AuthContext.tsx`, `src/pages/LoginPage.tsx`.
+
 - **06/04/2026 07:31** — Added 3 new backgrounds: Mountain 🏔️, City 🌆, Gradient 🎨.
   Mountain and City use downloaded images from Unsplash. Gradient is a pure CSS animated gradient (no image).
   See [`TODO-BACKGROUNDS.md`](./TODO-BACKGROUNDS.md) for full list.

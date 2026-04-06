@@ -60,10 +60,10 @@ export default function TaskCard({
             : "bg-white border-slate-200 hover:border-indigo-300 hover:shadow-sm"
         }`}
       >
-        {/* Checkbox */}
+        {/* Checkbox — min 44px tap area for mobile */}
         <button
           onClick={handleToggle}
-          className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+          className={`mt-0.5 flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
             isCompleted
               ? "bg-green-500 border-green-500 text-white"
               : "border-slate-300 hover:border-indigo-400"
@@ -99,10 +99,10 @@ export default function TaskCard({
           </div>
         </div>
 
-        {/* Edit button */}
+        {/* Edit button — always visible on mobile, hover-only on desktop */}
         <button
           onClick={() => setEditOpen(true)}
-          className="opacity-0 group-hover:opacity-100 flex-shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-all"
+          className="flex-shrink-0 p-2 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
           title="עריכה"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

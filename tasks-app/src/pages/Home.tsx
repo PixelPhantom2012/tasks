@@ -28,35 +28,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 pb-24">
-        {/* DEBUG PANEL — remove after diagnosing */}
-        <details className="mb-4 bg-yellow-50 border border-yellow-300 rounded-xl p-3 text-xs font-mono">
-          <summary className="cursor-pointer font-bold text-yellow-800">{t(language, "debugTasks")} ({tasks.length})</summary>
-          <div className="mt-2 flex flex-col gap-2">
-            <button
-              onClick={() => {
-                if (confirm(t(language, "confirmDeleteAll"))) {
-                  tasks.forEach((task) => deleteTask(task.id));
-                }
-              }}
-              className="self-start bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1 rounded text-xs"
-            >
-              {t(language, "deleteAll")}
-            </button>
-            {tasks.map((task) => (
-              <div key={task.id} className="bg-white border border-yellow-200 rounded p-2">
-                <div><b>title:</b> {task.title}</div>
-                <div><b>id:</b> {task.id}</div>
-                <div><b>createdAt:</b> {task.createdAt}</div>
-                <div><b>date:</b> {task.date ?? "(none)"}</div>
-                <div><b>recurrence:</b> {task.recurrence ? JSON.stringify(task.recurrence) : "(none)"}</div>
-                <div><b>completedDates:</b> [{task.completedDates.join(", ") || "—"}]</div>
-                <div><b>deletedDates:</b> [{(task.deletedDates ?? []).join(", ") || "—"}]</div>
-              </div>
-            ))}
-          </div>
-        </details>
-
+      <main className="max-w-lg mx-auto px-4 py-6 pb-28">
         <WeekView
           tasks={tasks}
           onAdd={addTask}
