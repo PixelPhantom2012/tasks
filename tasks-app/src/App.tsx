@@ -35,14 +35,14 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <SettingsProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <SettingsProvider>
         <AppBackground>
           <BrowserRouter>
             <AppRoutes />
           </BrowserRouter>
         </AppBackground>
-      </AuthProvider>
-    </SettingsProvider>
+      </SettingsProvider>
+    </AuthProvider>
   );
 }

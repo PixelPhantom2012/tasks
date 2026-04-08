@@ -27,6 +27,8 @@ Write your ideas here. When ready to implement, move them to the "Ready" section
 
 > Implemented ideas (with date).
 
+- **08/04/2026** — Per-user settings (Phase 1): language, background, and streak visibility stored in `localStorage` under `settings_*:<userId>`. `AuthProvider` wraps `SettingsProvider`; on logout, UI falls back to defaults (login screen). Legacy global keys migrate once into the first logged-in user’s namespaced keys, then removed (avoids leaking prefs to the next account). Optional Phase 2: Supabase `user_settings` for cross-device sync — still open.
+
 - **06/04/2026 10:13** — Fixed auth bug: new users got "Email not confirmed" error after signup.
   Root cause: Supabase email confirmation was enabled by default.
   Fix: Disabled "Confirm email" in Supabase → Authentication → Providers → Email. Users can now sign up and log in immediately.
