@@ -1,8 +1,16 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import { useAuth } from "./AuthContext";
+import { supabase } from "../lib/supabase";
+import {
+  DEFAULT_USER_SETTINGS,
+  type UserSettingsPayload,
+  fetchUserSettingsFromDb,
+  rowToUserSettings,
+  upsertUserSettingsToDb,
+} from "../lib/userSettingsDb";
+import type { Language, Background } from "../types/settings";
 
-export type Language = "he" | "en";
-export type Background = "default" | "jungle" | "night" | "ocean" | "mountain" | "city" | "gradient";
+export type { Language, Background } from "../types/settings";
 
 interface SettingsContextValue {
   language: Language;
@@ -14,10 +22,6 @@ interface SettingsContextValue {
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
-
-const DEFAULT_LANGUAGE: Language = "he";
-const DEFAULT_BACKGROUND: Background = "default";
-const DEFAULT_STREAK_VISIBLE = true;
 
 const LEGACY_LANGUAGE = "settings_language";
 const LEGACY_BACKGROUND = "settings_background";
@@ -50,7 +54,7 @@ function userHasAnyNamespacedKey(uid: string): boolean {
   );
 }
 
-/** First login after upgrade: move pre-auth global keys into this user, then remove globals (avoids leaking prefs to the next account). */
+/** First login after upgrade: move pre-auth global keys into this user, then remove globals. */
 function migrateLegacyToUser(uid: string): void {
   const legL = localStorage.getItem(LEGACY_LANGUAGE);
   const legB = localStorage.getItem(LEGACY_BACKGROUND);
@@ -64,53 +68,127 @@ function migrateLegacyToUser(uid: string): void {
   localStorage.removeItem(LEGACY_STREAK);
 }
 
-function readUserSettings(uid: string): {
-  language: Language;
-  background: Background;
-  streakVisible: boolean;
-} {
+function readUserSettingsLocal(uid: string): UserSettingsPayload {
   if (!userHasAnyNamespacedKey(uid)) migrateLegacyToUser(uid);
   return {
-    language: parseStored(localStorage.getItem(keyLanguage(uid)), DEFAULT_LANGUAGE),
-    background: parseStored(localStorage.getItem(keyBackground(uid)), DEFAULT_BACKGROUND),
-    streakVisible: parseStored(localStorage.getItem(keyStreak(uid)), DEFAULT_STREAK_VISIBLE),
+    language: parseStored(localStorage.getItem(keyLanguage(uid)), DEFAULT_USER_SETTINGS.language),
+    background: parseStored(localStorage.getItem(keyBackground(uid)), DEFAULT_USER_SETTINGS.background),
+    streakVisible: parseStored(localStorage.getItem(keyStreak(uid)), DEFAULT_USER_SETTINGS.streakVisible),
   };
+}
+
+function writeUserSettingsLocal(uid: string, s: UserSettingsPayload): void {
+  localStorage.setItem(keyLanguage(uid), JSON.stringify(s.language));
+  localStorage.setItem(keyBackground(uid), JSON.stringify(s.background));
+  localStorage.setItem(keyStreak(uid), JSON.stringify(s.streakVisible));
 }
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
-  const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE);
-  const [background, setBackgroundState] = useState<Background>(DEFAULT_BACKGROUND);
-  const [streakVisible, setStreakVisibleState] = useState<boolean>(DEFAULT_STREAK_VISIBLE);
+  const [language, setLanguageState] = useState<Language>(DEFAULT_USER_SETTINGS.language);
+  const [background, setBackgroundState] = useState<Background>(DEFAULT_USER_SETTINGS.background);
+  const [streakVisible, setStreakVisibleState] = useState<boolean>(DEFAULT_USER_SETTINGS.streakVisible);
 
+  // Logged-out: defaults only (no cloud).
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      setLanguageState(DEFAULT_LANGUAGE);
-      setBackgroundState(DEFAULT_BACKGROUND);
-      setStreakVisibleState(DEFAULT_STREAK_VISIBLE);
-      return;
+      setLanguageState(DEFAULT_USER_SETTINGS.language);
+      setBackgroundState(DEFAULT_USER_SETTINGS.background);
+      setStreakVisibleState(DEFAULT_USER_SETTINGS.streakVisible);
     }
-    const s = readUserSettings(user.id);
-    setLanguageState(s.language);
-    setBackgroundState(s.background);
-    setStreakVisibleState(s.streakVisible);
   }, [user?.id, loading]);
 
-  const setLanguage = useCallback((l: Language) => {
-    setLanguageState(l);
-    if (user) localStorage.setItem(keyLanguage(user.id), JSON.stringify(l));
-  }, [user]);
+  // Logged-in: load from Supabase, subscribe to changes, keep localStorage as offline cache.
+  useEffect(() => {
+    if (loading || !user) return;
+    const uid = user.id;
+    let cancelled = false;
 
-  const setBackground = useCallback((b: Background) => {
-    setBackgroundState(b);
-    if (user) localStorage.setItem(keyBackground(user.id), JSON.stringify(b));
-  }, [user]);
+    const apply = (s: UserSettingsPayload) => {
+      if (cancelled) return;
+      setLanguageState(s.language);
+      setBackgroundState(s.background);
+      setStreakVisibleState(s.streakVisible);
+      writeUserSettingsLocal(uid, s);
+    };
 
-  const setStreakVisible = useCallback((v: boolean) => {
-    setStreakVisibleState(v);
-    if (user) localStorage.setItem(keyStreak(user.id), JSON.stringify(v));
-  }, [user]);
+    apply(readUserSettingsLocal(uid));
+
+    (async () => {
+      const res = await fetchUserSettingsFromDb(uid);
+      if (cancelled) return;
+      if (!res.ok) {
+        apply(readUserSettingsLocal(uid));
+        return;
+      }
+      if (res.data) {
+        apply(res.data);
+        return;
+      }
+      const local = readUserSettingsLocal(uid);
+      apply(local);
+      void upsertUserSettingsToDb(uid, local);
+    })();
+
+    const channel = supabase
+      .channel(`user-settings-${uid}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "user_settings", filter: `user_id=eq.${uid}` },
+        (payload) => {
+          if (payload.eventType === "DELETE") return;
+          apply(
+            rowToUserSettings(
+              payload.new as {
+                language?: string | null;
+                background?: string | null;
+                streak_visible?: boolean | null;
+              }
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id, loading]);
+
+  const setLanguage = useCallback(
+    (l: Language) => {
+      setLanguageState(l);
+      if (!user) return;
+      const next: UserSettingsPayload = { language: l, background, streakVisible };
+      writeUserSettingsLocal(user.id, next);
+      void upsertUserSettingsToDb(user.id, next);
+    },
+    [user, background, streakVisible]
+  );
+
+  const setBackground = useCallback(
+    (b: Background) => {
+      setBackgroundState(b);
+      if (!user) return;
+      const next: UserSettingsPayload = { language, background: b, streakVisible };
+      writeUserSettingsLocal(user.id, next);
+      void upsertUserSettingsToDb(user.id, next);
+    },
+    [user, language, streakVisible]
+  );
+
+  const setStreakVisible = useCallback(
+    (v: boolean) => {
+      setStreakVisibleState(v);
+      if (!user) return;
+      const next: UserSettingsPayload = { language, background, streakVisible: v };
+      writeUserSettingsLocal(user.id, next);
+      void upsertUserSettingsToDb(user.id, next);
+    },
+    [user, language, background]
+  );
 
   useEffect(() => {
     document.documentElement.dir = language === "he" ? "rtl" : "ltr";

@@ -1,4 +1,4 @@
-import type { Language } from "../context/SettingsContext";
+import type { Language } from "../types/settings";
 
 type Translations = {
   // Nav / Home
