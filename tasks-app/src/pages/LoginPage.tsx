@@ -69,8 +69,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-3xl shadow-xl border border-slate-200 p-8 flex flex-col gap-6">
+    <div className="flex min-h-[100dvh] w-full flex-col overflow-y-auto overscroll-y-contain bg-slate-50 px-4 py-8 pb-[max(2rem,env(safe-area-inset-bottom,0px))] pt-[max(1.5rem,env(safe-area-inset-top,0px))]">
+      <div className="m-auto flex w-full max-w-sm flex-col gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-xl sm:p-8">
         {/* Logo / Title */}
         <div className="flex flex-col items-center gap-2">
           <span className="text-4xl">🌱</span>
@@ -96,7 +96,7 @@ export default function LoginPage() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="rounded-xl border border-slate-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 sm:py-2.5 sm:text-sm"
               placeholder="you@example.com"
             />
           </div>
@@ -112,7 +112,7 @@ export default function LoginPage() {
               autoComplete={mode === "login" ? "current-password" : "new-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="rounded-xl border border-slate-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 sm:py-2.5 sm:text-sm"
               placeholder="••••••••"
             />
           </div>

@@ -11,15 +11,15 @@ export default function Home() {
   const { language, streakVisible } = useSettings();
 
   return (
-    <div className="min-h-screen">
-      {/* Top nav */}
+    <div className="min-h-[100dvh]">
+      {/* Top nav — safe-area top + inline-start padding reserves space for fixed settings gear */}
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-slate-200 shadow-sm">
-        <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-slate-800">{t(language, "myTasks")}</h1>
+        <div className="max-w-lg mx-auto flex items-center justify-between pe-4 ps-14 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-3">
+          <h1 className="text-xl font-bold text-slate-800 min-w-0 truncate">{t(language, "myTasks")}</h1>
           {streakVisible && (
             <Link
               to="/plant"
-              className="flex items-center gap-1.5 text-sm font-medium text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-xl transition-colors"
+              className="flex-shrink-0 flex items-center gap-1.5 text-sm font-medium text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-xl transition-colors"
             >
               <span className="text-base">🌱</span>
               <span>{t(language, "streak")}: {streak}</span>
@@ -28,7 +28,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 pb-28">
+      <main className="max-w-lg mx-auto px-4 py-6 pb-[calc(7rem+env(safe-area-inset-bottom,0px))]">
         <WeekView
           tasks={tasks}
           onAdd={addTask}

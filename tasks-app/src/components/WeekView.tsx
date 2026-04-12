@@ -46,7 +46,7 @@ export default function WeekView({ tasks, onAdd, onUpdate, onDelete, onDeleteOcc
   return (
     <div className="flex flex-col gap-4">
       {/* Week header */}
-      <div className="flex items-center justify-between bg-white/90 backdrop-blur rounded-2xl shadow-sm border border-slate-200 px-4 py-3">
+      <div className="flex items-stretch justify-between gap-1 bg-white/90 backdrop-blur rounded-2xl shadow-sm border border-slate-200 px-2 py-3 sm:px-4">
         {/* In RTL: visually right = go back (chevron-right). In LTR: visually left = go back (chevron-left) */}
         <button
           onClick={() => setWeekStart((w) => shiftWeek(w, -1))}
@@ -60,11 +60,11 @@ export default function WeekView({ tasks, onAdd, onUpdate, onDelete, onDeleteOcc
           </svg>
         </button>
 
-        <div className="flex flex-col items-center gap-1">
-          <div className="flex items-center gap-1.5 font-bold text-slate-800 text-base">
-            <span>{formatWeekRange(weekStart, DAY_NAMES).start}</span>
-            <span className="text-slate-400 font-normal">–</span>
-            <span>{formatWeekRange(weekStart, DAY_NAMES).end}</span>
+        <div className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0.5">
+          <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-center font-bold text-slate-800 text-xs sm:text-base">
+            <span className="break-words">{formatWeekRange(weekStart, DAY_NAMES).start}</span>
+            <span className="text-slate-400 font-normal shrink-0">–</span>
+            <span className="break-words">{formatWeekRange(weekStart, DAY_NAMES).end}</span>
           </div>
           {!onCurrentWeek && (
             <button
@@ -123,10 +123,11 @@ export default function WeekView({ tasks, onAdd, onUpdate, onDelete, onDeleteOcc
                 </div>
                 <button
                   onClick={() => openAddModal(dayKey)}
-                  className="text-slate-400 hover:text-indigo-500 transition-colors p-1 rounded-lg hover:bg-indigo-50"
+                  className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-slate-400 hover:text-indigo-500 transition-colors rounded-lg hover:bg-indigo-50 active:bg-indigo-100"
                   title={t(language, "addTask")}
+                  aria-label={t(language, "addTask")}
                 >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                   </svg>
                 </button>

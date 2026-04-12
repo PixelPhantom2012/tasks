@@ -14,12 +14,14 @@ function PlantSVG({ stage }: { stage: number }) {
 
   return (
     <svg
-      width={size}
-      height={size}
       viewBox="0 0 200 200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ transition: "width 0.6s ease, height 0.6s ease" }}
+      className="mx-auto h-auto max-h-[min(42vh,220px)] w-full max-w-[min(100%,14rem)] sm:max-w-[min(100%,15.5rem)]"
+      style={{
+        width: `min(100%, ${size}px)`,
+        transition: "width 0.6s ease, max-width 0.6s ease",
+      }}
     >
       {/* Pot */}
       <rect x="72" y="160" width="56" height="30" rx="6" fill="#c2855a" />

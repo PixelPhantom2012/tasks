@@ -12,7 +12,7 @@ function AppRoutes() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-[100dvh] items-center justify-center">
         <span className="text-4xl animate-spin">🌱</span>
       </div>
     );

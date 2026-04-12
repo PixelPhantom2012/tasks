@@ -69,7 +69,7 @@ export default function SettingsPanel() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 py-2.5 text-sm font-medium transition-colors flex flex-col items-center gap-0.5 ${
+              className={`flex min-h-[48px] flex-1 flex-col items-center justify-center gap-0.5 py-2.5 text-sm font-medium transition-colors sm:min-h-0 ${
                 activeTab === tab.id
                   ? "text-indigo-600 border-b-2 border-indigo-500 bg-indigo-50/50"
                   : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"

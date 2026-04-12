@@ -110,9 +110,13 @@ export default function TaskModal({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center overscroll-none"
+      onClick={onClose}
+      role="presentation"
+    >
       <div
-        className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md sm:mx-4 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] flex flex-col gap-4 max-h-[90dvh] overflow-y-auto"
+        className="flex max-h-[90dvh] w-full flex-col gap-4 overflow-y-auto overscroll-y-contain rounded-t-3xl bg-white p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] shadow-2xl sm:mx-4 sm:max-w-md sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Delete confirmation overlay for recurring tasks */}
@@ -151,7 +155,7 @@ export default function TaskModal({
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-slate-600">כותרת *</label>
               <input
-                className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="rounded-lg border border-slate-300 px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 sm:py-2 sm:text-sm"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="שם המטלה"
@@ -163,7 +167,7 @@ export default function TaskModal({
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-slate-600">הערה</label>
               <textarea
-                className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+                className="resize-none rounded-lg border border-slate-300 px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 sm:py-2 sm:text-sm"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 rows={2}
@@ -176,7 +180,7 @@ export default function TaskModal({
               <label className="text-sm font-medium text-slate-600">שעה</label>
               <input
                 type="time"
-                className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-36"
+                className="w-full max-w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 sm:w-36 sm:py-2 sm:text-sm"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
               />
@@ -187,13 +191,14 @@ export default function TaskModal({
               <button
                 type="button"
                 onClick={() => setIsRecurring((p) => !p)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
                   isRecurring ? "bg-indigo-500" : "bg-slate-300"
                 }`}
+                aria-pressed={isRecurring}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
-                    isRecurring ? "-translate-x-6" : "-translate-x-1"
+                  className={`pointer-events-none absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow transition-all duration-200 ${
+                    isRecurring ? "end-0.5" : "start-0.5"
                   }`}
                 />
               </button>
@@ -206,7 +211,7 @@ export default function TaskModal({
                 <div className="flex flex-col gap-1">
                   <label className="text-sm font-medium text-slate-600">סוג חזרה</label>
                   <select
-                    className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 sm:py-2 sm:text-sm"
                     value={recurrenceType}
                     onChange={(e) => setRecurrenceType(e.target.value as RecurrenceType)}
                   >
@@ -241,7 +246,7 @@ export default function TaskModal({
                           key={idx}
                           type="button"
                           onClick={() => toggleDay(idx)}
-                          className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+                          className={`min-h-[40px] min-w-[40px] px-3 py-2 rounded-lg text-sm font-medium border transition-colors sm:min-h-0 sm:min-w-0 sm:py-1.5 ${
                             daysOfWeek.includes(idx)
                               ? "bg-indigo-500 text-white border-indigo-500"
                               : "bg-white text-slate-700 border-slate-300 hover:bg-slate-100"
@@ -263,32 +268,35 @@ export default function TaskModal({
                 <label className="text-sm font-medium text-slate-600">תאריך</label>
                 <input
                   type="date"
-                  className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-44"
+                  className="w-full max-w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 sm:max-w-[11rem] sm:py-2 sm:text-sm"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                 />
               </div>
             )}
 
-            {/* Actions */}
-            <div className="flex gap-2 pt-2 flex-row-reverse">
+            {/* Actions — stacked full-width on narrow screens; row on sm+ */}
+            <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-row-reverse sm:items-stretch">
               <button
+                type="button"
                 onClick={handleSave}
                 disabled={!title.trim()}
-                className="flex-1 bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-300 text-white font-semibold rounded-xl py-2.5 transition-colors"
+                className="order-1 w-full rounded-xl bg-indigo-500 py-3 font-semibold text-white transition-colors hover:bg-indigo-600 disabled:bg-slate-300 sm:order-none sm:flex-1 sm:py-2.5"
               >
                 {mode === "add" ? "הוסף" : "שמור"}
               </button>
               <button
+                type="button"
                 onClick={onClose}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl py-2.5 transition-colors"
+                className="order-2 w-full rounded-xl bg-slate-100 py-3 font-semibold text-slate-700 transition-colors hover:bg-slate-200 sm:order-none sm:flex-1 sm:py-2.5"
               >
                 ביטול
               </button>
               {mode === "edit" && (onDeleteAll || onDeleteOccurrence) && (
                 <button
+                  type="button"
                   onClick={handleDeleteClick}
-                  className="bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-xl px-4 py-2.5 transition-colors"
+                  className="order-3 w-full rounded-xl bg-red-50 py-3 font-semibold text-red-600 transition-colors hover:bg-red-100 sm:order-none sm:w-auto sm:px-5 sm:py-2.5"
                 >
                   מחק
                 </button>

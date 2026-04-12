@@ -12,24 +12,24 @@ export default function PlantPage() {
   const { language } = useSettings();
 
   return (
-    <div className="min-h-screen">
-      {/* Top nav */}
+    <div className="min-h-[100dvh]">
+      {/* Top nav — safe-area + inline-start pad for settings gear */}
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-slate-200 shadow-sm">
-        <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-lg mx-auto flex items-center justify-between gap-2 pe-4 ps-14 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-3">
           <Link
             to="/"
-            className="flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition-colors"
+            className="inline-flex min-h-[44px] max-w-[55%] shrink-0 items-center gap-1.5 rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-800 active:bg-slate-300 sm:min-h-0 sm:py-1.5"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
-            {t(language, "backToTasks")}
+            <span className="truncate">{t(language, "backToTasks")}</span>
           </Link>
-          <h1 className="text-xl font-bold text-slate-800">{t(language, "myPlant")}</h1>
+          <h1 className="min-w-0 truncate text-xl font-bold text-slate-800">{t(language, "myPlant")}</h1>
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-10">
+      <main className="max-w-lg mx-auto px-4 py-8 pb-[max(2rem,env(safe-area-inset-bottom,0px))] sm:py-10">
         <div className="bg-white/90 backdrop-blur rounded-3xl shadow-sm border border-slate-200 p-8">
           <Plant stage={stage} growthPct={growthPct} streak={streak} missedDays={missedDays} />
         </div>
