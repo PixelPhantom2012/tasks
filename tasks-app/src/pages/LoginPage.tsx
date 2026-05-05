@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
+import { isSupabaseConfigured } from "../lib/supabase";
 
 type Mode = "login" | "signup";
 
@@ -51,6 +52,14 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (!isSupabaseConfigured) {
+      setError(
+        isHe
+          ? "הגדר את Supabase ב-.env.local כדי להתחבר."
+          : "Configure Supabase in .env.local to sign in."
+      );
+      return;
+    }
     setLoading(true);
 
     if (mode === "login") {
@@ -83,6 +92,14 @@ export default function LoginPage() {
               : isHe ? "צור חשבון חדש" : "Create a new account"}
           </p>
         </div>
+
+        {!isSupabaseConfigured && (
+          <div className="text-sm rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900">
+            {isHe
+              ? "לא הוגדרו משתני Supabase. צור קובץ .env.local בתיקיית המשימות לפי .env.example כדי לאפשר התחברות."
+              : "Supabase env vars are missing. Add .env.local in the app folder (see .env.example) to enable sign-in."}
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

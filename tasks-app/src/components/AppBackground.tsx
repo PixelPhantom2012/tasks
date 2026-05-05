@@ -6,7 +6,7 @@ interface BgConfig {
   overlay?: string; // rgba color string, or undefined for no overlay
 }
 
-const base = import.meta.env.BASE_URL; // "/tasks/" in production, "/" in dev
+const base = import.meta.env.BASE_URL; // "/tasks/" in production build, "/" in dev
 
 const BG_CONFIG: Record<Background, BgConfig> = {
   default: {

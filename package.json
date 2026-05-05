@@ -1,0 +1,14 @@
+{
+  "name": "tasks-web",
+  "private": true,
+  "workspaces": ["tasks-app"],
+  "scripts": {
+    "dev": "npm run dev -w tasks-app",
+    "build": "npm run build -w tasks-app",
+    "lint": "npm run lint -w tasks-app",
+    "preview": "npm run preview -w tasks-app",
+    "test": "npm run test -w tasks-app",
+    "test:watch": "npm run test:watch -w tasks-app",
+    "test:ui": "npm run test:ui -w tasks-app"
+  }
+}
